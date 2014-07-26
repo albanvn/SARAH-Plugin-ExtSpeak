@@ -1,0 +1,95 @@
+<div id="ExtSpeak">  
+	<div class="span11">
+	<b>
+	Auteur: Alban Vidal-Naquet<BR>
+	Date: 24/07/2014
+	</b><BR>
+	<BR><BR>
+	Le plugin 'ExtSpeak' permet de surcharger la fonction speak de SARAH.<BR><BR>
+    La nouvelle fonction 'Speak' permet entre autre:<BR>
+	<ul>
+		<li>de détécter la présence de personne via le Kinect et sa détéction de mouvement,</li>
+		<li>de détécter la présence de personne via leurs appareils ios/android (suivant les réponses au ping),</li>
+        <li>de basculer automatiquement vers le mode de notification sur appareils ios/android si personne n'est détécté à la maison,</li>
+        <li>d'implémenter le choix automatique de réponse dans un SARAH.speak (par exemple le code "SARAH.speak("bonjour|ola|salut");" choissira un des 3 choix possible pour dire bonjour)</li>
+        <li>d'indiquer vocalement à SARAH que l'on est là ou bientôt plus,</li>
+		<li>d'utiliser les infos de profile SARAH pour envoyer les notifications vers des appareils ios/android,</li>
+		<li>de forcer la notification/la vocalisation selon une plage horaire défini (la nuit par exemple, on ne veut que des notifications, pas de vocalisations),</li>
+        <li>de forcer sans condition la notification/la vocalisation simultanées ou en débrayé (lorsque l'on part en vacance par exemple),</li>
+		<li>de permettre la notification one shot/limitée des réponses de SARAH vers des appareils ios/android (pour pousser une réponse de SARAH vers son mobile, la liste de film du cinéma par exemple,</li>
+		<li>à SARAH de pouvoir répéter sur demande une ou plusieurs des 5 dernières vocalisation faites,</li>
+		<li>d'attaquer via des plugins les fonctionnalités de ExtSpeak pour controler son fonctionnement ou le modifier (rajouter des modules de détection de présence/absence externe par exemple, détécteur IR...)</li>
+	</ul>
+	Ce plugin nécessite pour fonctionner l'installation <b>d'un des plugins suivant afin d'utiliser la fonctionnalité de notification</b>:<BR>
+	<ul>
+		<li>push (de Franck Wehrlé): Notification via le service prowl</li>
+		<li>pushover (de Olivier Domotic): Notification via le service prowl</li>
+		<li>pushingbox (de Jean-Philippe Encausse): Notification via le service prowl</li>
+	</ul><BR>
+    Merci a ces développeurs de leurs contributions, c'est grâce à eux que j'ai eu l'idée de ce plugin<BR>
+    <b>Remarque: le plugin a été testé avec le service push de Franck Wehrlé mais pas forcément les autres, néanmoins ces autres plugins devraient fonctionner sans problème.</b><TR>
+	<BR><BR>
+	<H4><b>Configuration et paramétrages du plugin</b></H4>
+    Afin d'utiliser ce plugin au mieux, il faut le configurer. Pour cela rendez-vous sur le portlet et cliquez sur le bouton de configuration<BR>
+    Voici les champs à renseigner:<BR>
+	<ul>
+		<li><l>SarahServerIp</l>: adresse IP de SARAH, par défaut 'localhost:8080'</li>
+		<li><l>PhoneIpList</l>: liste des adresses IP d'appareils à surveiller séparées par une virgule (,)</li>
+		<li><l>NotificationPluginName</l>: nom du plugin SARAH de notification choisi (push, pusover ou pushingbox)</li>
+        <li><l>PushPluginDefaultUser</l>: uniquement pour le plugin push, le nom du compte prowl par défaut à utiliser (voir les noms définis du coté du plugin push)</li>
+		<li><l>PushUseProfilId</l>: permet d'activer (lorsque à 1) pour le service push les infos de profile SARAH disponible afin de selectionner le bon compte prowl</li>
+		<li><l>EnableForceSpeak</l>: permet de forcer (lorsque à 1) la vocalisation, même si la notification est active</li>
+		<li><l>EnableForceNotify</l>: permet de forcer (lorsque à 1) la notification, même si la vocalisation est active</li>
+		<li><l>EnableKinectMotionDetect</l>: permet d'activer (lorsque à 1) les informations de détéction de mouvement de SARAH pour la présence</li>
+		<li><l>EnableInstantNotification</l>: permet d'activer (lorsque à 1) les notifications instantannés (via demande vocale)</li>
+		<li><l>EnableRepeat</l>: permet d'activer (lorsque à 1) les fonctionnalités de répetition (via demande vocale)</li>
+		<li><l>SpeakTimeRange</l>: permet de définir une plage horaire sous la forme "HHMM-HHMM" de fonctionnement de la vocalisation (défaut 0800-0000 = entre 8h du matin et minuit)</li>
+		<li><l>NotifyTimeRange</l>: permet de définir une plage horaire sous la forme "HHMM-HHMM" de fonctionnement de la notification (défaut 0000-0800 = entre minuit et 8h du matin)</li>
+		<li><l>MinInactivityDelay</l>: permet de définir pour le ping/la détéction de mouvement, le delais minimum pour la bascule automatique en mode absence (défaut 20 minutes)</li>
+		<li><l>PingDelay</l>: permet de définir le delais entre 2 pings sur une IP d'un appareil (défaut 20 secondes)</li>
+		<li><l>LeaveDelay</l>: permet de définir le delais pendant lequel les événements ping/détection de mouvement sont ignorés et permettent à l'utilisateur de signaler son départ sans être contredit par les événements (défaut 120 secondes)</li>
+	</ul>
+	<BR><BR>
+	<H4><b>Utilisation</b></H4>
+	<BR><BR>
+	<H4><b>Commandes reconnues par SARAH</b></H4>
+	<ul>
+        <li><b>Je m'en vais</b>: permet de demander explicitement à SARAH de passer en mode absence</li>
+        <li><b>Je suis là</b>: permet de demander explicitement à SARAH de passer en mode présence</li>
+        <li><b>Notifie moi la prochaine vocalisation</b>: permet de demander à SARAH de notifier (notification instantanée) sur appareils uniquement sa prochaine réponse</li>
+        <li><b>Notifie moi</b>: idem qu'au dessus</li>
+        <li><b>Début de notification</b>: permet de passer en mode notification instantanée, les reponses de SARAH seront vocalisées et notifiées sur appareils</li>
+        <li><b>Fin de notification</b>: permet de mettre fin au mode de notification instantanée</li>
+        <li><b>pardon, hein, quoi, tu peux répéter...</b>: toutes les phrases pour demander à SARAH de répeter, voir le fichier .xml pour la liste exhaustive de ces commandes</li>
+        <li><b>pardon, hein, quoi, tu peux répéter...</b>: toutes les phrases pour demander à SARAH de répeter, voir le fichier .xml pour la liste exhaustive de ces commandes</li>
+        <li><b>Tu peux tout répéter</b>: permet à SARAH de répéter toutes les dernières phrases mémorisées, voir le fichier .xml pour la liste exhaustive de ces commandes</li>
+	</ul>
+	<BR><BR>
+	<H4><b>Développeurs et utilisation transverse</b></H4>
+    Dans le framework SARAH, les plugin peuvent explicitement appeler les services de ExtSpeak via des URL, les voici:<BR>
+    <ul>
+        <li><b>http://localhost:8080/sarah/ExtSpeak?mode=notify</b>: permet d'activer le mode de notification instantanée (1 seule réponse)</li>
+        <li><b>http://localhost:8080/sarah/ExtSpeak?mode=notify_b</b>: permet de passer en mode de notification</li>
+        <li><b>http://localhost:8080/sarah/ExtSpeak?mode=notify_e</b>: permet de désactiver le mode de notification</li>
+        <li><b>http://localhost:8080/sarah/ExtSpeak?mode=repeat</b>: SARAH répete sa dernière vocalisation</li>
+        <li><b>http://localhost:8080/sarah/ExtSpeak?mode=repeatX</b>: X variant de 1 à 5. Repetes les X dernières phrases</li>
+        <li><b>http://localhost:8080/sarah/ExtSpeak?mode=forcespeak&value=X</b>: permet d'activer(X=1)/désactiver(X=0) l'option ForceSpeak</li>
+        <li><b>http://localhost:8080/sarah/ExtSpeak?mode=forcenotify&value=X</b>: permet d'activer(X=1)/désactiver(X=0) l'option ForceNotify</li>
+        <li><b>http://localhost:8080/sarah/ExtSpeak?mode=kinectmotiondetect&value=X</b>: permet d'activer(X=1)/désactiver(X=0) l'option KinectMotionDetect</li>
+        <li><b>http://localhost:8080/sarah/ExtSpeak?mode=activitynow</b>: permet de passer en mode présence immédiatemment</li>
+        <li><b>http://localhost:8080/sarah/ExtSpeak?mode=idlenow</b>: permet de passer en mode absence immédiatemment</li>
+        <li><b>http://localhost:8080/sarah/ExtSpeak?mode=detectactivity</b>: permet de passer en mode présence (temporisé avec le delais de 'LeaveDelay' minutes)</li>
+        <li><b>http://localhost:8080/sarah/ExtSpeak?mode=detectidle</b>: permet de passer en mode absence (temporisé avec le delais de 'MinInactivityDelay' minutes)</li>
+        Les deux dernières URL sont à utilisés dans le cadre de détécteur annexe de présence/absence.<BR>
+        Pour éviter les vocalisations de SARAH lorsque vous appelerez ces URL vous pouvez ajouter "&silent=1" à la fin de l'URL<BR>
+        
+	<BR><BR>
+	<H4><b>ChangeLog</H4>
+	<ul>
+		<li>v1.0: 24/07/2014, initial public release</li>
+	</ul>
+	<BR><BR>
+	<H4><b>TODO list</b></H4>
+	<BR><BR>
+	</div> 
+</div>

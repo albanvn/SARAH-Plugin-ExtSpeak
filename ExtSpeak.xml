@@ -1,0 +1,35 @@
+﻿<grammar version="1.0" xml:lang="fr-FR" mode="voice" root="ruleExtSpeak" xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <rule id="ruleExtSpeak" scope="public">
+    <example>Sarah  ?</example>
+    <tag>out.action=new Object();</tag>
+    <item>Sarah</item>
+    <one-of>
+      <item>Je m'en vais<tag>out.action.mode="idlenow";</tag></item>
+      <item>Je suis là<tag>out.action.mode="activitynow";</tag></item>
+      <item>Notifie moi la prochaine vocalisation<tag>out.action.mode="notify";</tag></item>
+      <item>Notifie moi<tag>out.action.mode="notify";</tag></item>
+      <item>Début de notification<tag>out.action.mode="notify_b";</tag></item>
+      <item>Fin de notification<tag>out.action.mode="notify_e";</tag></item>
+      
+      <item>pardon<tag>out.action.mode="repeat";</tag></item>
+      <item>hein<tag>out.action.mode="repeat";</tag></item>
+      <item>excuse moi<tag>out.action.mode="repeat";</tag></item>
+	  <item>que dis tu<tag>out.action.mode="repeat";</tag></item>
+	  <item>qu'as tu dit<tag>out.action.mode="repeat";</tag></item>
+      <item>quoi<tag>out.action.mode="repeat";</tag></item>
+      <item>qu'est ce que tu as dit<tag>out.action.mode="repeat";</tag></item>
+      <item>Tu peux répéter<tag>out.action.mode="repeat";</tag></item>
+      <item>Tu peux tout répéter<tag>out.action.mode="repeat5";</tag></item>
+      <item>peux tu répéter<tag>out.action.mode="repeat";</tag></item>
+      <item>peux tu tout répéter<tag>out.action.mode="repeat5";</tag></item>
+      <item>répetes<tag>out.action.mode="repeat";</tag></item>
+      <item>répetes tout<tag>out.action.mode="repeat5";</tag></item>
+      <item>Est ce que tu peux répéter<tag>out.action.mode="repeat";</tag></item>
+      <item>Est ce que tu peux tout répéter<tag>out.action.mode="repeat5";</tag></item>
+      <item>Tu peux répéter les 5 dernières phrases<tag>out.action.mode="repeat5";</tag></item>
+    </one-of>
+    <tag>out.action._attributes.uri="http://127.0.0.1:8080/sarah/ExtSpeak";</tag>
+  </rule> 
+<!-- Automatic Generation § -->
+<!-- § Automatic Generation -->
+</grammar>

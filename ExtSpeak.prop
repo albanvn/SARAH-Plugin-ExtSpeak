@@ -1,0 +1,29 @@
+{
+  "modules" : { 
+    "ExtSpeak"  : {
+      "description": "Extended Speak service for automatic notification/repeat/...",
+      "version": "1.0",
+      
+      "SarahServerIp": "localhost:8080",
+      
+      "PhoneIpList": "192.168.1.100",
+      
+      "NotificationPluginName": "push",
+      "PushPluginDefaultUser": "default",
+      "PushUseProfilId": "1",
+      
+      "EnableForceSpeak": "0",
+      "EnableForceNotify": "0",
+      "EnableKinectMotionDetect": "1",
+      "EnableInstantNotification": "1",
+      "EnableRepeat": "1",
+      
+      "SpeakTimeRange":  "0800-0000",
+      "NotifyTimeRange": "0000-0800",
+      
+      "MinInactivityDelay": "30",
+      "PingDelay": "20",
+      "LeaveDelay": "120"
+    }
+  }
+}
