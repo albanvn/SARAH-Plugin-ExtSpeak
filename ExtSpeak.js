@@ -11,7 +11,7 @@
     -Plages horaires multiples pour Speak à implementer
     -Plages horaires multiples pour notify à implementer
 ******************************/
-var g_debug=1;
+var g_debug=0;
 
 var loc=require("./customloc.js").init(__dirname);
 var bf=require("./basicfunctions.js").init(function(){return g_debug;});
@@ -101,7 +101,7 @@ var ExtendedSpeak=function(str, async, SARAH)
         var fstr=str.replace(/ /,"+");
         // Replace [name] section by last identified profile
         fstr=fstr.replace("[name]", g_profile);
-        // Choose notification plugin
+        // send notification
         res=sendNotification(fstr);
     }
     // If one shot notify mode then clear it
@@ -159,6 +159,9 @@ function sendNotification(str)
 
 var myStandBy = function(motion, data, SARAH)
 {
+    var d=new Date();
+    
+    bf.debug(1, "myStandBy("+motion+","+JSON.stringify(data)+")");
     data.silent="1";
     data.mode="";
     // If in event ignore period, don't do anything
@@ -174,6 +177,9 @@ var myStandBy = function(motion, data, SARAH)
             break;
         case false:
             data.mode="detectidle";
+            break;
+        default:
+            console.log("Unknow value");
             break;
         
     }
@@ -402,7 +408,7 @@ var action = function(data, callback, config, SARAH)
                         g_startIgnoreEventDate.setTime(d.getTime()+(gs_ignoreEventDelay*1000));
                         for(var i in g_ping)
                             g_ping[i]=phoneinactivitydelay;
-                        g_startInactivityDate.setTime(d.getTime()+g_config.MinInactivityDelay*60*1000);
+                        g_startInactivityDate.setTime(d.getTime());
                       }, 2*1000);
             break;
         case "detectactivity":
