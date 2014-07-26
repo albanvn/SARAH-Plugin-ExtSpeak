@@ -53,7 +53,7 @@ var selectSentence=function(tts)
 
 var ExtendedSpeak=function(str, async, SARAH)
 {
-    var url="";
+    var res=0;
     var nobody=true;
     var d=new Date();
     var phoneinactivitydelay=(60/gs_pingDelay)*g_config.MinInactivityDelay;
@@ -102,33 +102,7 @@ var ExtendedSpeak=function(str, async, SARAH)
         // Replace [name] section by last identified profile
         fstr=fstr.replace("[name]", g_profile);
         // Choose notification plugin
-        switch (g_config.NotificationPluginName)
-        {
-            case "push":
-                var profile=g_config.PushPluginDefaultUser;
-                if (g_config.PushUseProfilId=="1" && g_profile!="")
-                    profile=g_profile;
-                url=gs_push_url.replace("<SERVER>", g_config.SarahServerIp.trim())+"?silent=1&who="+profile+"&msg="+fstr;
-                break;
-            case "pushingbox":
-               url=gs_pushingbox_url.replace("<SERVER>", g_config.SarahServerIp.trim())+"?tts="+fstr+"&quiet=1";
-               break;
-            case "pushover":
-                url=gs_pushover_url.replace("<SERVER>", g_config.SarahServerIp.trim())+"?push="+fstr;
-                break;
-            default:
-                console.log("ExtSpeak: Unknow notification system, please review plugin settings");
-                break;
-        }
-        // If something to send, then send it now
-        if (url!="")
-        {
-            var request = require('request');
-            request(    { 'uri' : url }, 
-                        function (err, response, body)
-                        {
-                        });
-        }
+        res=sendNotification(fstr);
     }
     // If one shot notify mode then clear it
     if (g_notify==1)
@@ -137,7 +111,7 @@ var ExtendedSpeak=function(str, async, SARAH)
     //      someone is here, or no notification system setted, 
     //    AND
     //      force speak enabled, or in speak time range
-    if ((nobody==false || url=="") && (g_config.EnableForceSpeak=="1" || isInTimeRange(d, g_SpeakTimeRange)==true))
+    if ((nobody==false || res==-1) && (g_config.EnableForceSpeak=="1" || isInTimeRange(d, g_SpeakTimeRange)==true))
         // Vocalize string
         return str;
     // Then no vocalisation 
@@ -145,6 +119,43 @@ var ExtendedSpeak=function(str, async, SARAH)
 }
 
 exports.speak=ExtendedSpeak;
+
+function sendNotification(str)
+{
+    var url="";
+    switch (g_config.NotificationPluginName)
+    {
+        case "push":
+            var profile=g_config.PushPluginDefaultUser;
+            if (g_config.PushUseProfilId=="1" && g_profile!="")
+                profile=g_profile;
+            url=gs_push_url.replace("<SERVER>", g_config.SarahServerIp.trim())+"?silent=1&who="+profile+"&msg="+str;
+            break;
+        case "pushingbox":
+            url=gs_pushingbox_url.replace("<SERVER>", g_config.SarahServerIp.trim())+"?tts="+str+"&quiet=1";
+            break;
+        case "pushover":
+            url=gs_pushover_url.replace("<SERVER>", g_config.SarahServerIp.trim())+"?push="+str;
+            break;
+        default:
+            console.log("ExtSpeak: Unknow notification system, please review plugin settings");
+            return -1;
+            break;
+    }
+    // If something to send, then send it now
+    if (url!="")
+    {
+        var request = require('request');
+        request(    { 'uri' : url }, 
+                    function (err, response, body)
+                    {
+                        if (err!=0)
+                            console.log("ExtSpeak: Error while sending notification ("+err+")");
+                    }
+                );
+    }
+    return 0;
+}
 
 var myStandBy = function(motion, data, SARAH)
 {
@@ -156,6 +167,9 @@ var myStandBy = function(motion, data, SARAH)
     switch(motion)
     {
         case true:
+            if (g_startInactivityDate.getTime()>0 && d.getTime()>g_startInactivityDate.getTime())
+                if (g_config.EnableMotionNotify=="1")
+                    sendNotification(loc.getLocalString("IDMOTIONDETECT"));
             data.mode="detectactivity";
             break;
         case false:
@@ -197,7 +211,6 @@ exports.init = function(SARAH)
     
 	config=config.modules.ExtSpeak;
     g_config=config;
-    console.log(g_config.SpeakTimeRange);
     res=patt.exec(g_config.SpeakTimeRange);
     // Extract Speak time range infos
     if (res!=null && res.length==5)
@@ -317,24 +330,24 @@ var action = function(data, callback, config, SARAH)
             // instant notify mode
             if (g_config.EnableInstantNotification=="1")
             {
-                if (typeof(data.silent)!="undefined" && data.silent=="1")
+                if (typeof(data.silent)=="undefined" || data.silent!="1")
                     SARAH.speak(loc.getLocalString("OKLETSGO"));
                 setTimeout(function(){g_notify=1;}, 2*1000);
             }
             else
-                if (typeof(data.silent)!="undefined" && data.silent=="1")
+                if (typeof(data.silent)=="undefined" || data.silent!="1")
                     SARAH.speak(loc.getLocalString("IDNOINSTANTNOTIFY"));                
             break;
         case "notify_b":
             // instant notify period begin 
             if (g_config.EnableInstantNotification=="1")
             {
-                if (typeof(data.silent)!="undefined" && data.silent=="1")
+                if (typeof(data.silent)=="undefined" || data.silent!="1")
                     SARAH.speak(loc.getLocalString("OKLETSGO"));
                 setTimeout(function(){g_notify=2;}, 2*1000);
             }
             else
-                if (typeof(data.silent)!="undefined" && data.silent=="1")
+                if (typeof(data.silent)=="undefined" || data.silent!="1")
                     SARAH.speak(loc.getLocalString("IDNOINSTANTNOTIFY"));                
             break;
         case "notify_e":
@@ -342,11 +355,11 @@ var action = function(data, callback, config, SARAH)
             if (g_config.EnableInstantNotification=="1")
             {
                 g_notify=0;
-                if (typeof(data.silent)!="undefined" && data.silent=="1")
+                if (typeof(data.silent)=="undefined" || data.silent!="1")
                     SARAH.speak(loc.getLocalString("OKLETSGO"));
             }
             else
-                if (typeof(data.silent)!="undefined" && data.silent=="1")
+                if (typeof(data.silent)=="undefined" || data.silent!="1")
                     SARAH.speak(loc.getLocalString("IDNOINSTANTNOTIFY"));                
             break;
         case "repeat":
@@ -372,6 +385,8 @@ var action = function(data, callback, config, SARAH)
             break;
         case "kinectmotiondetect":
             g_config.EnableKinectMotionDetect=data.value.toString();
+        case "motionnotify":
+            g_config.EnableMotionNotify=data.value.toString();
             break;
         case "activitynow":      
             g_startInactivityDate.setTime(0);
@@ -380,9 +395,9 @@ var action = function(data, callback, config, SARAH)
             comment=loc.getLocalString("OKLETSGO");
             break;
         case "idlenow":
-           if (typeof(data.silent)!="undefined" && data.silent=="1")
+            if (typeof(data.silent)=="undefined" || data.silent!="1")
                 SARAH.speak(loc.getLocalString("OKLETSGO"));
-           setTimeout(function()
+            setTimeout(function()
                       {
                         g_startIgnoreEventDate.setTime(d.getTime()+(gs_ignoreEventDelay*1000));
                         for(var i in g_ping)

@@ -14,3 +14,4 @@ FORMATDATE5A#%WEEKDAY% %DAY% %MONTH%
 IDCANTREMEMBER#Je suis désolé mais je ne m'en souviens plus.
 IDREPEATDISABLED#Désolé je ne suis pas configuré pour cela.
 IDNOINSTANTNOTIFY#Désolé je ne suis pas configuré pour cela.
+IDMOTIONDETECT#Mouvement détécté à la maison

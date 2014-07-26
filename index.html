@@ -41,6 +41,7 @@
 		<li><l>EnableForceSpeak</l>: permet de forcer (lorsque à 1) la vocalisation, même si la notification est active</li>
 		<li><l>EnableForceNotify</l>: permet de forcer (lorsque à 1) la notification, même si la vocalisation est active</li>
 		<li><l>EnableKinectMotionDetect</l>: permet d'activer (lorsque à 1) les informations de détéction de mouvement de SARAH pour la présence</li>
+		<li><l>EnableMotionDetection</l>: permet d'activer (lorsque à 1) la notification de détéction de mouvement lorsque que l'on n'est plus là</li>
 		<li><l>EnableInstantNotification</l>: permet d'activer (lorsque à 1) les notifications instantannés (via demande vocale)</li>
 		<li><l>EnableRepeat</l>: permet d'activer (lorsque à 1) les fonctionnalités de répetition (via demande vocale)</li>
 		<li><l>SpeakTimeRange</l>: permet de définir une plage horaire sous la forme "HHMM-HHMM" de fonctionnement de la vocalisation (défaut 0800-0000 = entre 8h du matin et minuit)</li>
@@ -76,6 +77,7 @@
         <li><b>http://localhost:8080/sarah/ExtSpeak?mode=forcespeak&value=X</b>: permet d'activer(X=1)/désactiver(X=0) l'option ForceSpeak</li>
         <li><b>http://localhost:8080/sarah/ExtSpeak?mode=forcenotify&value=X</b>: permet d'activer(X=1)/désactiver(X=0) l'option ForceNotify</li>
         <li><b>http://localhost:8080/sarah/ExtSpeak?mode=kinectmotiondetect&value=X</b>: permet d'activer(X=1)/désactiver(X=0) l'option KinectMotionDetect</li>
+        <li><b>http://localhost:8080/sarah/ExtSpeak?mode=motionnotify&value=X</b>: permet d'activer(X=1)/désactiver(X=0) l'option motion notify</li>
         <li><b>http://localhost:8080/sarah/ExtSpeak?mode=activitynow</b>: permet de passer en mode présence immédiatemment</li>
         <li><b>http://localhost:8080/sarah/ExtSpeak?mode=idlenow</b>: permet de passer en mode absence immédiatemment</li>
         <li><b>http://localhost:8080/sarah/ExtSpeak?mode=detectactivity</b>: permet de passer en mode présence (temporisé avec le delais de 'LeaveDelay' minutes)</li>

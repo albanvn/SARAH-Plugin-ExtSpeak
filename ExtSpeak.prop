@@ -16,6 +16,7 @@
       "EnableForceNotify": "0",
       "EnableKinectMotionDetect": "1",
       "EnableInstantNotification": "1",
+      "EnableMotionNotify": "1",
       "EnableRepeat": "1",
       
       "SpeakTimeRange":  "0800-0000",
