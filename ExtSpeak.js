@@ -317,31 +317,37 @@ var action = function(data, callback, config, SARAH)
             // instant notify mode
             if (g_config.EnableInstantNotification=="1")
             {
-                SARAH.speak(loc.getLocalString("OKLETSGO"));
+                if (typeof(data.silent)!="undefined" && data.silent=="1")
+                    SARAH.speak(loc.getLocalString("OKLETSGO"));
                 setTimeout(function(){g_notify=1;}, 2*1000);
             }
             else
-                SARAH.speak(loc.getLocalString("IDNOINSTANTNOTIFY"));                
+                if (typeof(data.silent)!="undefined" && data.silent=="1")
+                    SARAH.speak(loc.getLocalString("IDNOINSTANTNOTIFY"));                
             break;
         case "notify_b":
             // instant notify period begin 
             if (g_config.EnableInstantNotification=="1")
             {
-                SARAH.speak(loc.getLocalString("OKLETSGO"));
+                if (typeof(data.silent)!="undefined" && data.silent=="1")
+                    SARAH.speak(loc.getLocalString("OKLETSGO"));
                 setTimeout(function(){g_notify=2;}, 2*1000);
             }
             else
-                SARAH.speak(loc.getLocalString("IDNOINSTANTNOTIFY"));                
+                if (typeof(data.silent)!="undefined" && data.silent=="1")
+                    SARAH.speak(loc.getLocalString("IDNOINSTANTNOTIFY"));                
             break;
         case "notify_e":
             // instant notify period end
             if (g_config.EnableInstantNotification=="1")
             {
                 g_notify=0;
-                SARAH.speak(loc.getLocalString("OKLETSGO"));
+                if (typeof(data.silent)!="undefined" && data.silent=="1")
+                    SARAH.speak(loc.getLocalString("OKLETSGO"));
             }
             else
-                SARAH.speak(loc.getLocalString("IDNOINSTANTNOTIFY"));                
+                if (typeof(data.silent)!="undefined" && data.silent=="1")
+                    SARAH.speak(loc.getLocalString("IDNOINSTANTNOTIFY"));                
             break;
         case "repeat":
             repeat(1, SARAH);
@@ -374,7 +380,8 @@ var action = function(data, callback, config, SARAH)
             comment=loc.getLocalString("OKLETSGO");
             break;
         case "idlenow":
-            SARAH.speak(loc.getLocalString("OKLETSGO"));
+           if (typeof(data.silent)!="undefined" && data.silent=="1")
+                SARAH.speak(loc.getLocalString("OKLETSGO"));
            setTimeout(function()
                       {
                         g_startIgnoreEventDate.setTime(d.getTime()+(gs_ignoreEventDelay*1000));
@@ -398,7 +405,7 @@ var action = function(data, callback, config, SARAH)
                     g_ping[i]=phoneinactivitydelay;
            break;
     }
-    if (data.silent=="1")
+    if (typeof(data.silent)!="undefined" && data.silent=="1")
         comment="";
 	callback({'tts': comment});
 	return 0;
