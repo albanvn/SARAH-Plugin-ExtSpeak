@@ -33,7 +33,7 @@ exports.init = function(SARAH)
 	var config=SARAH.ConfigManager.getConfig();
 	var patt=new RegExp("([0-9]{2})([0-9]{2})-([0-9]{2})([0-9]{2})");
     var res;
-    
+  
 	config=config.modules.ExtSpeak;
     g_config=config;
     //SARAH.context.ExtSpeak=bf.LoadContext();
@@ -55,6 +55,8 @@ exports.init = function(SARAH)
         g_NotifyTimeRange.push(res[3]);
         g_NotifyTimeRange.push(res[4]);
     }
+    g_notifyDate=new Date();
+    g_notifyDate.setTime(0);
     // Create array for mobiles list ping
     var arr=g_config.PhoneIpList.split(",");
     if (typeof(SARAH.context.ExtSpeak)=="undefined" || SARAH.context.ExtSpeak==0)
@@ -65,8 +67,6 @@ exports.init = function(SARAH)
         SARAH.context.ExtSpeak.startIgnoreEventDate=new Date();
         SARAH.context.ExtSpeak.startIgnoreEventDate.setTime(0);
         SARAH.context.ExtSpeak.notify=0;
-        g_notifyDate=new Date();
-        g_notifyDate.setTime(0);
         SARAH.context.ExtSpeak.ping=new Array();
         SARAH.context.ExtSpeak_timer=new Array();
         SARAH.context.ExtSpeak.repeat=new Array();
@@ -118,6 +118,11 @@ exports.init = function(SARAH)
                     30*1000);
 }
 
+exports.reload=function(SARAH)
+{
+    bf.SaveContext();
+}
+
 exports.release = function(SARAH)
 {
     bf.SaveContext();
@@ -150,8 +155,9 @@ var ExtendedSpeak=function(str, async, SARAH)
     var res=0;
     var d=new Date();
     // RegExp to get the out of space RunStop plugin
-    var patt=new RegExp("^([0-9]{3}:[0-9]{2}:[0-9]{2})$");
+    var patt=new RegExp("^([0-9]{0,3}:[0-9]{2}:[0-9]{2})$");
     var r=patt.exec(str);   
+    var n=-1,s=-1;
 
     // If empty then call the original speak function
     if (str=="")
@@ -159,6 +165,37 @@ var ExtendedSpeak=function(str, async, SARAH)
     // Check if not a tts callback sended by 'RunStop' plugin; If it is, process it with standard speak function
     if (r!=null && r.length==2 && r[1]!="")
         return str;
+    
+    patt=new RegExp("^(\[[NS]*(\]).*$");
+    var res=patt.exec(str);
+    if (res!=null && res.length==2)
+    {
+        switch(res[1])
+        {
+            case "[N]":
+                n=1;
+                s=0;
+                break;
+            case "[S]":
+                s=1;
+                n=0;
+                break;
+            case "[NS]":
+            case "[SN]":
+                n=1;
+                s=1;
+                break;
+            case "[]":
+                n=0;
+                s=0;
+                break;
+            default:
+                console.log("ExtSpeak: Unknow extspeak option '"+res[1]+"'");
+                break;
+        }
+        str=str.replace(res[1], "");
+    }
+    
     // If multiple sentence choice, then choose one
     str=selectSentence(str);
     bf.debug(1, "ExtendedSpeak(\""+str+"\","+async+",SARAH)");
@@ -178,6 +215,7 @@ var ExtendedSpeak=function(str, async, SARAH)
     bf.debug(2, "isInTimeRange(Notify)="+isInTimeRange(d, g_NotifyTimeRange));
     bf.debug(2, "isInTimeRange(Speak)="+isInTimeRange(d,g_SpeakTimeRange));
     bf.debug(2, (status.nobody==false?"Device detected at home,":"No device detected at home,")+"(max:"+status.max*g_config.PingDelay+" seconds,min:"+status.min*g_config.PingDelay+" seconds)");
+    bf.debug(2, "n="+n+" s="+s);
     // If no mobiles detected then be sure than the last motion detection was before the inactivity delay
     if (status.nobody==true && SARAH.context.ExtSpeak.startInactivityDate.getTime()>0 && d.getTime()<SARAH.context.ExtSpeak.startInactivityDate.getTime())
         // Check that we are not in ignore event period
@@ -189,16 +227,17 @@ var ExtendedSpeak=function(str, async, SARAH)
     bf.debug(2, "Nobody="+status.nobody);
     // Check instant notify status
     var instant_notify=(SARAH.context.ExtSpeak.notify==2?true:(SARAH.context.ExtSpeak.notify==0?false:(SARAH.context.ExtSpeak.notify==1?(d.getTime()<g_notifyDate.getTime()?true:false):false)));
-    // Need to send a notification ?
-    if (status.nobody==true || g_config.EnableForceNotify=="1" || (instant_notify==true && g_config.EnableInstantNotification=="1") || isInTimeRange(d, g_NotifyTimeRange)==true)
-    {
-        // Yes, so adapt string to http transfer (transform space in '+')
-        var fstr=str.replace(/ /,"+");
-        // Replace [name] section by last identified profile
-        fstr=fstr.replace("[name]", g_profile);
-        // send notification
-        res=sendNotification(fstr);
-    }
+    if (n==-1 || n==1)
+        // Need to send a notification ?
+        if (n==1 || status.nobody==true || g_config.EnableForceNotify=="1" || (instant_notify==true && g_config.EnableInstantNotification=="1") || isInTimeRange(d, g_NotifyTimeRange)==true)
+        {
+            // Yes, so adapt string to http transfer (transform space in '+')
+            var fstr=str.replace(/ /,"+");
+            // Replace [name] section by last identified profile
+            fstr=fstr.replace("[name]", g_profile);
+            // send notification
+            res=sendNotification(fstr);
+        }
     // If one shot notify mode then clear it
     if (SARAH.context.ExtSpeak.notify==1)
     {
@@ -209,9 +248,10 @@ var ExtendedSpeak=function(str, async, SARAH)
     //      someone is here, or no notification system setted, 
     //    AND
     //      force speak enabled, or in speak time range
-    if ((status.nobody==false || res==-1) && (g_config.EnableForceSpeak=="1" || isInTimeRange(d, g_SpeakTimeRange)==true))
-        // Vocalize string
-        return str;
+    if (s==-1 || s==1)
+        if ((s==1 || status.nobody==false || res==-1) && (g_config.EnableForceSpeak=="1" || isInTimeRange(d, g_SpeakTimeRange)==true))
+            // Vocalize string
+            return str;
     // Then no vocalisation 
     return false;
 }
