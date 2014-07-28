@@ -188,7 +188,7 @@ var ExtendedSpeak=function(str, async, SARAH)
         }
     bf.debug(2, "Nobody="+status.nobody);
     // Check instant notify status
-    var instant_notify=(SARAH.context.ExtSpeak.notify==2?true:(SARAH.context.ExtSpeak.notify==0?false:(SARAH.context.ExtSpeak.notify==1?(d.getTime()<g_notifyDate.getTime()?true:false))));
+    var instant_notify=(SARAH.context.ExtSpeak.notify==2?true:(SARAH.context.ExtSpeak.notify==0?false:(SARAH.context.ExtSpeak.notify==1?(d.getTime()<g_notifyDate.getTime()?true:false):false)));
     // Need to send a notification ?
     if (status.nobody==true || g_config.EnableForceNotify=="1" || (instant_notify==true && g_config.EnableInstantNotification=="1") || isInTimeRange(d, g_NotifyTimeRange)==true)
     {
