@@ -208,7 +208,7 @@ var convertUTF8toASCII=function( str )
 	return ret.replace(re, "");
 }
 
-var sendRequest = function(url, cb, arg, data, callback, config, SARAH)
+var sendRequest = function(url, cb, arg, data, callback, config, SARAH, cberror)
 {
 	var request = require('request');
 	request({ 'uri' : url, 'headers':{'Accept-Charset':'utf-8'},'encoding':'binary'}, 
@@ -217,6 +217,8 @@ var sendRequest = function(url, cb, arg, data, callback, config, SARAH)
 				if (err || response.statusCode != 200) 
 				{
 					console.log("url " + url + " failed");
+                    if (typeof(cberror)=="function")
+                        cberror(err, response, arg, data, callback, config, SARAH);
 					return -1;
 				}
 				if (typeof cb!=="undefined" && cb!=0)
@@ -426,6 +428,27 @@ function debugF(lvl, obj)
     return debug(lvl, obj, 1);
 }
 
+var LoadContext=function()
+{
+    var fs   = require('fs');
+    var filename=__dirname+"\\context.json";
+	if (fs.existsSync(filename))
+	{
+		var content = fs.readFileSync(filename,'utf8');
+        return JSON.parse(content);
+    }
+    return 0;
+}
+
+var SaveContext=function(path)
+{
+    var fs   = require('fs');
+    var filename=__dirname+"\\context.json";
+    var content=JSON.stringify(path);
+	fs.writeFileSync(filename, content, 'utf8');
+    return 0;
+}
+
 exports.init=init;
 exports.getSpeaker=getSpeaker;
 exports.sendRequest=sendRequest;
@@ -441,3 +464,5 @@ exports.convertUTF8toASCII=convertUTF8toASCII;
 exports.sendProwl=sendProwl;
 exports.debug=debug;
 exports.debugF=debugF;
+exports.LoadContext=LoadContext;
+exports.SaveContext=SaveContext;

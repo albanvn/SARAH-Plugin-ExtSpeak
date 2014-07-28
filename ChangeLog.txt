@@ -13,4 +13,16 @@ V1.0 - 25/07/2014
 -----------------
   Initial release
   
+V1.1 - 28/08/2014
+-----------------
+    - "release plugin" function ready
+    - add timeout on instant notify mode 1
+    - remember last state after a nodejs service stop (LoadContext/SaveContext added)
+    - correct bugs
+    - update index.html (doc)
+    - update basicfunctions.js (cberrorfunc in sendRequest added, LoadContext/SaveContext added)
+    - Add RepeatMax in .prop for repeat max array
+    - ExtSpeak remember previous state after a plugin reload (important variables are saved in SARAH.context now)
+    - code esthetic review, suppress soe useless variables...
+    
 

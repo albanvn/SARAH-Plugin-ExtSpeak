@@ -2,7 +2,7 @@
   "modules" : { 
     "ExtSpeak"  : {
       "description": "Extended Speak service for automatic notification/repeat/...",
-      "version": "1.0",
+      "version": "1.1",
       
       "SarahServerIp": "localhost:8080",
       
@@ -21,9 +21,9 @@
       
       "SpeakTimeRange":  "0800-0000",
       "NotifyTimeRange": "0000-0800",
-      
+      "RepeatMax":       "5",
       "MinInactivityDelay": "30",
-      "PingDelay": "20",
+      "PingDelay":  "20",
       "LeaveDelay": "120"
     }
   }
