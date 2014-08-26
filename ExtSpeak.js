@@ -166,7 +166,7 @@ var ExtendedSpeak=function(str, async, SARAH)
     if (r!=null && r.length==2 && r[1]!="")
         return str;
     
-    patt=new RegExp("^(\[[NS]*(\]).*$");
+    patt=new RegExp("^(\[[NS]*\]).*$");
     var res=patt.exec(str);
     if (res!=null && res.length==2)
     {
@@ -249,7 +249,8 @@ var ExtendedSpeak=function(str, async, SARAH)
     //    AND
     //      force speak enabled, or in speak time range
     if (s==-1 || s==1)
-        if ((s==1 || status.nobody==false || res==-1) && (g_config.EnableForceSpeak=="1" || isInTimeRange(d, g_SpeakTimeRange)==true))
+        if (s==1 || 
+		    ((status.nobody==false || res==-1) && (g_config.EnableForceSpeak=="1" || isInTimeRange(d, g_SpeakTimeRange)==true)))
             // Vocalize string
             return str;
     // Then no vocalisation 

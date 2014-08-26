@@ -85,7 +85,15 @@
         <li><b>http://localhost:8080/sarah/ExtSpeak?mode=detectidle</b>: permet de passer en mode absence (temporisé avec le delais de 'MinInactivityDelay' minutes)</li>
         Les deux dernières URL sont à utilisés dans le cadre de détécteur annexe de présence/absence.<BR>
         Pour éviter les vocalisations de SARAH lorsque vous appelerez ces URL vous pouvez ajouter "&silent=1" à la fin de l'URL<BR>
-        
+        Les developpeurs de plugins tranverses peuvent aussi via le service SARAH:speak ajouter une option de notification/vocalisation dans la chaine a vocaliser qui surchargera le comportement de ExtSpeak.
+        Ainsi:
+        <ul>
+            <li><b>SARAH.speak("[N]Bonjour");</b>: SARAH enverra "Bonjour" en notification uniquement sans aucune vocalisation</li>
+            <li><b>SARAH.speak("[S]Bonjour");</b>: SARAH vocalisera "Bonjour" et n'enverra aucune notification</li>
+            <li><b>SARAH.speak("[NS]Bonjour"); ou SARAH.speak("[SN]Bonjour");</b>: SARAH enverra "Bonjour" en notification et le vocalisera également</li>
+            <li><b>SARAH.speak("[]Bonjour");</b>: SARAH n'enverra aucune notification et ferra aucune vocalisation</li>
+            
+        </ul>
 	<BR><BR>
 	<H4><b>ChangeLog</H4>
 	<ul>

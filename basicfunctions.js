@@ -17,6 +17,10 @@ function init(func)
    return this;
 }
 
+function release()
+{
+}
+
 // Function speak needed with SARAH v3.X because SARAH.speak function doesn't support concomitant call
 function speak(content, SARAH)
 {
@@ -450,6 +454,7 @@ var SaveContext=function(path)
 }
 
 exports.init=init;
+exports.release=release;
 exports.getSpeaker=getSpeaker;
 exports.sendRequest=sendRequest;
 exports.replaceSectionInFile=replaceSectionInFile;
